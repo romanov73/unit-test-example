@@ -15,15 +15,19 @@ public class UserService {
     private PersistentStore<User> persistentStore;
     PropertyManager propertyManager = PropertyManager.getInstance();
 
+    public UserService(PersistentStore<User> persistentStore) {
+        this.persistentStore = persistentStore;
+    }
+
     public UserService() {
         persistentStore = propertyManager.getTargetStorage().equals("file")
                 ? new FileStore(User.class)
                 : new DbStore(User.class);
     }
 
-    void saveUser(User user) throws UserNotValidException, IOException {
+    public User saveUser(User user) throws UserNotValidException, IOException {
         validateUser(user);
-        persistentStore.save(user);
+        return persistentStore.save(user);
     }
 
     public List<User> getUsers() throws IOException {
